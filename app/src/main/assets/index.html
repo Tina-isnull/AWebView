@@ -1,0 +1,74 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的网页</title>
+</head>
+
+<a href="wcar://www.xuheyao.win" title="Emily's Blog">跳一跳</a>
+<a href="" title="Emily's Blog">空链接</a>
+
+<div class="file-box clearboth" id="fileBox">
+    <label class="clone-dom" style="display:none;">
+        <input type="file" class="file-btn" name="img[]"/>
+    </label>
+    <div class="review-box"></div>
+    <label><input type="file" onchange="change();" class="file-btn clone-dom" name="img[]"
+                  id="upload"/>
+    </label>
+</div>
+<div id="imgdiv">
+
+</div>
+<script>
+function change() {
+var obj = document.getElementById("upload");
+var len = obj.files.length;
+for (var i = 0; i < len; i++) {
+var temp = obj.files[i].name;
+alert(temp)
+
+var imgdiv = document.getElementById("imgdiv");
+var img = document.createElement("img");
+img.src = obj.files[i].name;
+imgdiv.appendChild(img);
+}
+}
+
+function showDialog(){
+alert("调成功了")
+}
+</script>
+
+
+<script type="text/javascript">
+            var s = '我来自Js方法';
+            function javatojscallback(param){
+                 document.getElementById("textshow").innerHTML = (param);
+                 //window.android.JsToJavaInterface(s)
+            }
+</script>
+
+<body>
+<h3 id="textshow">android调用js的调用结果</h3>
+</body>
+
+
+<script>
+         function callAndroid(){
+            // 由于对象映射，所以调用test对象等于调用Android映射的对象
+            android.goToSecond("js去调用了android中的hello方法");
+         }
+
+</script>
+<body>
+<button type="button" id="button1" onclick="callAndroid()">点击按钮则调用callAndroid函数</button>
+</body>
+
+
+<body>
+<video controls width="250">
+    <source src="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4">
+</video>
+</body>
+</html>
