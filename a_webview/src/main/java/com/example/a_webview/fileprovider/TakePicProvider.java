@@ -1,4 +1,4 @@
-package com.example.awebview.fileprovider;
+package com.example.a_webview.fileprovider;
 
 import androidx.core.content.FileProvider;
 

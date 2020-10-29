@@ -1,9 +1,9 @@
 package com.example.awebview;
 
 import android.webkit.JavascriptInterface;
-import android.widget.Toast;
 
-import com.example.awebview.utils.LogUtils;
+import com.example.a_webview.utils.LogUtils;
+
 
 public class WebViewJS {
     @JavascriptInterface

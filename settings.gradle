@@ -1,2 +1,3 @@
+include ':a_webview'
 include ':app'
 rootProject.name = "AWebView"

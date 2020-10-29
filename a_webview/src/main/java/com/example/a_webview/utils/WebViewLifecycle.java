@@ -1,4 +1,4 @@
-package com.example.awebview.utils;
+package com.example.a_webview.utils;
 
 import android.app.Activity;
 import android.app.Application;
@@ -7,7 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.awebview.web.AWebView;
+import com.example.a_webview.web.AWebView;
 
 /**
  * 监听Activity生命周期的方法，配合调用webView的相应方法

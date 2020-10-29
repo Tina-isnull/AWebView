@@ -1,4 +1,4 @@
-package com.example.awebview.web;
+package com.example.a_webview.web;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,15 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import com.example.awebview.components.BaseWebChromeClient;
-import com.example.awebview.components.BaseWebViewClient;
-import com.example.awebview.inter.LifeCycleManager;
-import com.example.awebview.utils.FileUtils;
-import com.example.awebview.utils.LogUtils;
+import com.example.a_webview.components.BaseWebChromeClient;
+import com.example.a_webview.components.BaseWebViewClient;
+import com.example.a_webview.inter.LifeCycleManager;
+import com.example.a_webview.utils.LogUtils;
 
 import org.json.JSONArray;
 
-import java.io.File;
 import java.util.Arrays;
 
 

@@ -1,11 +1,12 @@
-package com.example.awebview.components;
+package com.example.a_webview.components;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebView;
 
-import com.example.awebview.inter.ReShouldOverrideUrlLoading;
+import com.example.a_webview.inter.ReShouldOverrideUrlLoading;
+
 
 public class MyWebViewClient extends BaseWebViewClient {
     private Context mContext;

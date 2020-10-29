@@ -1,24 +1,25 @@
-package com.example.awebview.myview;
+package com.example.a_webview.myview;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.core.view.ViewCompat;
 
-import com.example.awebview.R;
-import com.example.awebview.inter.ProgressListener;
+import com.example.a_webview.R;
+import com.example.a_webview.inter.ProgressListener;
 
 
 /**
  * 进度条(从原来项目考过来的)
  */
 public class ProgressView extends View implements ProgressListener {
-    int defaultColor = getResources().getColor(R.color.wsres_color_FE9949);
+    int defaultColor = Color.parseColor("#FE9949");
     Paint progressPaint = null;
     Paint progressCircle = null;
     int currentProgress = 0;

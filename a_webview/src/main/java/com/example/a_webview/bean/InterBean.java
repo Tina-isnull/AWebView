@@ -1,4 +1,4 @@
-package com.example.awebview.bean;
+package com.example.a_webview.bean;
 
 public class InterBean {
     public Object object;

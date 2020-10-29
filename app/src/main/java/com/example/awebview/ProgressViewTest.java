@@ -11,7 +11,7 @@ import android.view.View;
 
 import androidx.core.view.ViewCompat;
 
-import com.example.awebview.inter.ProgressListener;
+import com.example.a_webview.inter.ProgressListener;
 
 
 /**

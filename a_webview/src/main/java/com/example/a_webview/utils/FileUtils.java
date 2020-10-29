@@ -1,6 +1,4 @@
-package com.example.awebview.utils;
-
-import android.util.Log;
+package com.example.a_webview.utils;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package com.example.awebview.components;
+package com.example.a_webview.components;
 
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;

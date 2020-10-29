@@ -1,4 +1,4 @@
-package com.example.awebview.web;
+package com.example.awebview;
 
 import android.content.Intent;
 import android.os.Build;
@@ -15,13 +15,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.awebview.R;
-import com.example.awebview.SecondActivity;
-import com.example.awebview.WebViewJS;
-import com.example.awebview.bean.InterBean;
-import com.example.awebview.inter.ReShouldOverrideUrlLoading;
-import com.example.awebview.inter.onTitleReceive;
-import com.example.awebview.ProgressViewTest;
+import com.example.a_webview.web.AWebView;
+import com.example.a_webview.web.AWebViewWrapper;
+import com.example.a_webview.bean.InterBean;
+import com.example.a_webview.inter.ReShouldOverrideUrlLoading;
+import com.example.a_webview.inter.onTitleReceive;
 
 import java.util.ArrayList;
 

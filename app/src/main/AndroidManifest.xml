@@ -25,11 +25,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".web.WebViewImlActivity"
+            android:name=".WebViewImlActivity"
             android:configChanges="keyboardHidden|orientation|screenSize" />
 
         <provider
-            android:name=".fileprovider.TakePicProvider"
+            android:name="com.example.a_webview.fileprovider.TakePicProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">

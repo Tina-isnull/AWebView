@@ -1,4 +1,4 @@
-package com.example.awebview.web;
+package com.example.a_webview.web;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -8,15 +8,14 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
-import com.example.awebview.R;
-import com.example.awebview.bean.InterBean;
-import com.example.awebview.components.MyWebViewClient;
-import com.example.awebview.components.ProgressTitleChromeClient;
-import com.example.awebview.inter.ProgressListener;
-import com.example.awebview.inter.ReShouldOverrideUrlLoading;
-import com.example.awebview.inter.onProgressCount;
-import com.example.awebview.inter.onTitleReceive;
-import com.example.awebview.myview.ProgressView;
+import com.example.a_webview.bean.InterBean;
+import com.example.a_webview.components.MyWebViewClient;
+import com.example.a_webview.components.ProgressTitleChromeClient;
+import com.example.a_webview.inter.ProgressListener;
+import com.example.a_webview.inter.ReShouldOverrideUrlLoading;
+import com.example.a_webview.inter.onProgressCount;
+import com.example.a_webview.inter.onTitleReceive;
+import com.example.a_webview.myview.ProgressView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +38,7 @@ public class AWebViewWrapper {
     private onTitleReceive onTitleReceive;
     //自定义进度条
     private View mView;
+
 
     public AWebViewWrapper(Builder mBuilder) {
         this.mContext = mBuilder.mContext;
@@ -106,7 +106,6 @@ public class AWebViewWrapper {
     private void initProgressBar(ProgressTitleChromeClient mclient) {
         mProgressview = new ProgressView(mContext);
         mProgressview.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 6));
-        mProgressview.setDefaultColor(mContext.getResources().getColor(R.color.wsres_color_FE9949));
         mWebView.addView(mProgressview);
         mclient.setOnProgressCount(new onProgressCount() {
             @Override
@@ -194,7 +193,7 @@ public class AWebViewWrapper {
             return this;
         }
 
-        public Builder setOnTitleReceive(com.example.awebview.inter.onTitleReceive onTitleReceive) {
+        public Builder setOnTitleReceive(com.example.a_webview.inter.onTitleReceive onTitleReceive) {
             this.onTitleReceive = onTitleReceive;
             return this;
         }

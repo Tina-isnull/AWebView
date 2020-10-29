@@ -1,4 +1,4 @@
-package com.example.awebview.web;
+package com.example.a_webview.web;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
-import com.example.awebview.components.PhotoWebChromeClient;
+import com.example.a_webview.components.PhotoWebChromeClient;
 
 import static android.app.Activity.RESULT_OK;
 
