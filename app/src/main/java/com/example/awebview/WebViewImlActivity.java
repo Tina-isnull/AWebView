@@ -63,9 +63,9 @@ public class WebViewImlActivity extends AppCompatActivity {
                 .setContext(this)
                 .setWebView(mAWebView)
                 .setUrl(mUrl)
-                .setUsedDefaultProgress(true)
+                .setIsHaveProgress(true)//设置是否有进度条
                 .setProgressView(mTest)
-                .setList(mdata)
+                .setJsData(mdata)
                 .setOnTitleReceive(new onTitleReceive() {
                     @Override
                     public void onTitle(String title) {
