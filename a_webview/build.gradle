@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-//apply plugin: 'com.novoda.bintray-release'//添加
 apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.Tina-isnull'
 android {
@@ -33,12 +32,3 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
 }
-//发布到 Bintray
-//publish {
-//    userOrg = 'tina-isnull'           //bintray.com 注册的用户名
-//    groupId = 'com.lcc.webview'   //以后访问 jcenter上此项目的路径，一般和库项目的包名一致
-//    artifactId = 'Awebview'       //bintray.com 创建的 Package 名
-//    publishVersion = '1.0.0'         //版本号
-//    desc = '这是个使用上可能方便点点的webview吧' //版本说明，随意
-//    website = 'https://github.com/Tina-isnull/AWebView.git'    //关于这个开源项目的网站，随意
-//}
