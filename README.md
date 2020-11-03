@@ -1,5 +1,5 @@
 # AWebView
-webview封装
+webview封装,暂时没有jsbridge
 
 配置
 
