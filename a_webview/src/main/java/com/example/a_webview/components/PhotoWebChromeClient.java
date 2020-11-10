@@ -101,6 +101,20 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
     }
 
     /**
+     * 取消调用
+     */
+    public void cancel() {
+        if (valueCallbacks != null) {
+            valueCallbacks.onReceiveValue(null);
+            valueCallbacks = null;
+        }
+        if (uriValueCallback != null) {
+            uriValueCallback.onReceiveValue(null);
+            uriValueCallback = null;
+        }
+    }
+
+    /**
      * 跳转选择相册界面
      */
     private Intent createDefaultOpenableIntent() {
@@ -165,42 +179,5 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
         }
     }
 
-    public void cancle() {
-        if (valueCallbacks != null) {
-            valueCallbacks.onReceiveValue(null);
-            valueCallbacks = null;
-        }
-        if (uriValueCallback != null) {
-            uriValueCallback.onReceiveValue(null);
-            uriValueCallback = null;
-        }
-    }
-    //    /**
-//     * 跳转哪个选择
-//     */
-//    public void select() {
-//        AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-//        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//            @Override
-//            public void onCancel(DialogInterface dialog) {
-//                cancle();
-//            }
-//        });
-//        dialog.setTitle("相册还是拍照");
-//        dialog.setNegativeButton("相册", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//
-//            }
-//        });
-//        dialog.setPositiveButton("拍照", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//
-//
-//            }
-//        });
-//        dialog.show();
-//
-//    }
+
 }

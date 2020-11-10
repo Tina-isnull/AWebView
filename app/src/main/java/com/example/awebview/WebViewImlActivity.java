@@ -1,5 +1,6 @@
 package com.example.awebview;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,8 +14,11 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.a_webview.components.PhotoWebChromeClient;
+import com.example.a_webview.inter.onPhotoDialogListener;
 import com.example.a_webview.web.AWebView;
 import com.example.a_webview.web.AWebViewWrapper;
 import com.example.a_webview.bean.InterBean;
@@ -72,6 +76,12 @@ public class WebViewImlActivity extends AppCompatActivity {
                         mTitle.setText(title);
                     }
                 })
+                .setPhotoDialogListener(new onPhotoDialogListener() {
+                    @Override
+                    public void showPhotoDialog(PhotoWebChromeClient mClient) {
+                        select(mClient);
+                    }
+                })
                 .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoadListener() {
                     @Override
                     public void interceptProcess(WebView wv, String url) {
@@ -81,6 +91,35 @@ public class WebViewImlActivity extends AppCompatActivity {
                     }
                 })
                 .getAWebViewWrapper();
+
+    }
+
+    /**
+     * 跳转哪个选择
+     */
+    public void select(final PhotoWebChromeClient mClient) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                mClient.cancel();
+            }
+        });
+        dialog.setTitle("相册还是拍照");
+        dialog.setNegativeButton("相册", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mClient.openAlbum();
+            }
+        });
+        dialog.setPositiveButton("拍照", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mClient.takePhoto();
+
+            }
+        });
+        dialog.show();
 
     }
 
