@@ -1,5 +1,7 @@
 package com.example.a_webview.utils;
 
+import android.os.Environment;
+
 import java.io.File;
 
 public class FileUtils {
@@ -22,5 +24,15 @@ public class FileUtils {
         } else {
             LogUtils.d("delete file no exists " + file.getAbsolutePath());
         }
+    }
+    /**
+     * 图片存储路径
+     *
+     * @return
+     */
+    public static File getFilePath() {
+        String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
+        File cameraDataDir = new File(filePath, System.nanoTime() + ".jpg");
+        return cameraDataDir;
     }
 }

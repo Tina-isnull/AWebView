@@ -18,8 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.a_webview.web.AWebView;
 import com.example.a_webview.web.AWebViewWrapper;
 import com.example.a_webview.bean.InterBean;
-import com.example.a_webview.inter.ReShouldOverrideUrlLoading;
-import com.example.a_webview.inter.onTitleReceive;
+import com.example.a_webview.inter.ReShouldOverrideUrlLoadListener;
+import com.example.a_webview.inter.onTitleReceiveListener;
 
 import java.util.ArrayList;
 
@@ -66,15 +66,15 @@ public class WebViewImlActivity extends AppCompatActivity {
                 .setIsHaveProgress(true)//设置是否有进度条
                 .setProgressView(mTest)
                 .setJsData(mdata)
-                .setOnTitleReceive(new onTitleReceive() {
+                .setOnTitleReceive(new onTitleReceiveListener() {
                     @Override
                     public void onTitle(String title) {
                         mTitle.setText(title);
                     }
                 })
-                .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoading() {
+                .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoadListener() {
                     @Override
-                    public void InterceptProcess(WebView wv, String url) {
+                    public void interceptProcess(WebView wv, String url) {
                         if (url.startsWith("wcar")) {
                             startActivity(new Intent(WebViewImlActivity.this, SecondActivity.class));
                         }

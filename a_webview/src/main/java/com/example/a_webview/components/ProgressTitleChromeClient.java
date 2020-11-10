@@ -4,15 +4,15 @@ import android.content.Context;
 import android.webkit.JsPromptResult;
 import android.webkit.WebView;
 
-import com.example.a_webview.inter.onProgressCount;
-import com.example.a_webview.inter.onTitleReceive;
+import com.example.a_webview.inter.onProgressCountListener;
+import com.example.a_webview.inter.onTitleReceiveListener;
 
 /**
  * 进度条、标题
  */
 public class ProgressTitleChromeClient extends VideoWebChromeClient {
-    private onProgressCount onProgressCount;
-    private onTitleReceive onTitleReceive;
+    private onProgressCountListener onProgressCount;
+    private onTitleReceiveListener onTitleReceive;
 
     public ProgressTitleChromeClient(Context mContext) {
         super(mContext);
@@ -41,11 +41,11 @@ public class ProgressTitleChromeClient extends VideoWebChromeClient {
         return super.onJsPrompt(view, url, message, defaultValue, result);
     }
 
-    public void setOnProgressCount(onProgressCount onProgressCount) {
+    public void setOnProgressCount(onProgressCountListener onProgressCount) {
         this.onProgressCount = onProgressCount;
     }
 
-    public void setOnTitleReceive( onTitleReceive onTitleReceive) {
+    public void setOnTitleReceive( onTitleReceiveListener onTitleReceive) {
         this.onTitleReceive = onTitleReceive;
     }
 }

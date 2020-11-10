@@ -1,5 +1,5 @@
 package com.example.a_webview.inter;
 
-public interface onTitleReceive {
+public interface onTitleReceiveListener {
     void onTitle(String title);
 }

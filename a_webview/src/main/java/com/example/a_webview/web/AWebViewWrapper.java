@@ -10,11 +10,13 @@ import android.widget.FrameLayout;
 
 import com.example.a_webview.bean.InterBean;
 import com.example.a_webview.components.MyWebViewClient;
+import com.example.a_webview.components.PhotoWebChromeClient;
 import com.example.a_webview.components.ProgressTitleChromeClient;
 import com.example.a_webview.inter.ProgressListener;
-import com.example.a_webview.inter.ReShouldOverrideUrlLoading;
-import com.example.a_webview.inter.onProgressCount;
-import com.example.a_webview.inter.onTitleReceive;
+import com.example.a_webview.inter.ReShouldOverrideUrlLoadListener;
+import com.example.a_webview.inter.onPhotoDialogListener;
+import com.example.a_webview.inter.onProgressCountListener;
+import com.example.a_webview.inter.onTitleReceiveListener;
 import com.example.a_webview.myview.ProgressView;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ import java.util.Map;
 public class AWebViewWrapper {
     private Context mContext;
     //自定义拦截操作
-    private ReShouldOverrideUrlLoading mRedefineUrl;
+    private ReShouldOverrideUrlLoadListener mRedefineUrl;
     private AWebView mWebView;
     private WebChromeClient mWebChromeClient;
     private WebViewClient mWebViewClient;
@@ -35,11 +37,13 @@ public class AWebViewWrapper {
     //是否需要进度条
     private boolean isHaveProgress;
     //标题的设置回调
-    private onTitleReceive onTitleReceive;
+    private onTitleReceiveListener onTitleReceive;
     //自定义进度条
     private View mView;
     //进度条颜色
     private int mProgressColor;
+    //调起照片的进度条
+    private onPhotoDialogListener onPhotoDialogListener;
 
 
     public AWebViewWrapper(Builder mBuilder) {
@@ -54,6 +58,7 @@ public class AWebViewWrapper {
         this.isHaveProgress = mBuilder.isHaveProgress;
         this.onTitleReceive = mBuilder.onTitleReceive;
         this.mView = mBuilder.mView;
+        this.onPhotoDialogListener = mBuilder.photoDialogListener;
         init();
     }
 
@@ -65,6 +70,9 @@ public class AWebViewWrapper {
         } else {
             //用封装过的
             ProgressTitleChromeClient mClient = new ProgressTitleChromeClient(mContext);
+            if (onPhotoDialogListener != null) {//拍照功能
+                ((PhotoWebChromeClient) mClient).setListener(onPhotoDialogListener);
+            }
             mWebView.setmBaseWebChromeClient(mClient);
             //设置默认的进度条
             if (isHaveProgress) {
@@ -112,7 +120,7 @@ public class AWebViewWrapper {
             mProgressview.setDefaultColor(mProgressColor);//设置进度条的颜色
         }
         mWebView.addView(mProgressview);
-        mclient.setOnProgressCount(new onProgressCount() {
+        mclient.setOnProgressCount(new onProgressCountListener() {
             @Override
             public void onProgress(int newProgress) {
                 mProgressview.setProgress(newProgress);
@@ -124,7 +132,7 @@ public class AWebViewWrapper {
     private void setProgressBar(ProgressTitleChromeClient mclient, final View mView) {
         if (mView instanceof ProgressListener) {
             mWebView.addView(mView);
-            mclient.setOnProgressCount(new onProgressCount() {
+            mclient.setOnProgressCount(new onProgressCountListener() {
                 @Override
                 public void onProgress(int newProgress) {
                     ((ProgressListener) mView).setProgress(newProgress);
@@ -141,7 +149,7 @@ public class AWebViewWrapper {
 
     public static class Builder {
         private Context mContext;
-        private ReShouldOverrideUrlLoading mRedefineUrl;
+        private ReShouldOverrideUrlLoadListener mRedefineUrl;
         private AWebView mWebView;
         private WebChromeClient mWebChromeClient;
         private WebViewClient mWebViewClient;
@@ -149,9 +157,15 @@ public class AWebViewWrapper {
         private String mUrl;
         private Map<String, String> mHttpHeaders = new HashMap<String, String>();
         private boolean isHaveProgress;
-        private onTitleReceive onTitleReceive;
+        private onTitleReceiveListener onTitleReceive;
         private View mView;
         private int mProgressColor;
+        private onPhotoDialogListener photoDialogListener;
+
+        public Builder setPhotoDialogListener(com.example.a_webview.inter.onPhotoDialogListener photoDialogListener) {
+            this.photoDialogListener = photoDialogListener;
+            return this;
+        }
 
         public Builder setContext(Context mContext) {
             this.mContext = mContext;
@@ -159,7 +173,7 @@ public class AWebViewWrapper {
         }
 
         //是否重新定义拦截跳转的逻辑
-        public Builder setReShouldOverrideUrlLoading(ReShouldOverrideUrlLoading mRedefineUrl) {
+        public Builder setReShouldOverrideUrlLoading(ReShouldOverrideUrlLoadListener mRedefineUrl) {
             this.mRedefineUrl = mRedefineUrl;
             return this;
         }
@@ -199,7 +213,7 @@ public class AWebViewWrapper {
             return this;
         }
 
-        public Builder setOnTitleReceive(com.example.a_webview.inter.onTitleReceive onTitleReceive) {
+        public Builder setOnTitleReceive(onTitleReceiveListener onTitleReceive) {
             this.onTitleReceive = onTitleReceive;
             return this;
         }

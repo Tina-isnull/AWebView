@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebView;
 
-import com.example.a_webview.inter.ReShouldOverrideUrlLoading;
+import com.example.a_webview.inter.ReShouldOverrideUrlLoadListener;
 
 
 public class MyWebViewClient extends BaseWebViewClient {
     private Context mContext;
-    private ReShouldOverrideUrlLoading mRedefineUrl;//自定义拦截操作
+    private ReShouldOverrideUrlLoadListener mRedefineUrl;//自定义拦截操作
 
     public MyWebViewClient() {
     }
@@ -20,7 +20,7 @@ public class MyWebViewClient extends BaseWebViewClient {
         if (url == null) return false;
         try {
             if (mRedefineUrl != null) {
-                mRedefineUrl.InterceptProcess(wv, url);
+                mRedefineUrl.interceptProcess(wv, url);
             }
             if (url.startsWith("weixin://") //微信
                     || url.startsWith("alipays://") //支付宝
@@ -53,7 +53,7 @@ public class MyWebViewClient extends BaseWebViewClient {
 
     public static class Builder {
         private Context mContext;
-        private ReShouldOverrideUrlLoading mRedefineUrl;
+        private ReShouldOverrideUrlLoadListener mRedefineUrl;
 
         public Builder setContext(Context mContext) {
             this.mContext = mContext;
@@ -61,7 +61,7 @@ public class MyWebViewClient extends BaseWebViewClient {
         }
 
 
-        public Builder setReShouldOverrideUrlLoading(ReShouldOverrideUrlLoading mRedefineUrl) {
+        public Builder setReShouldOverrideUrlLoading(ReShouldOverrideUrlLoadListener mRedefineUrl) {
             this.mRedefineUrl = mRedefineUrl;
             return this;
         }

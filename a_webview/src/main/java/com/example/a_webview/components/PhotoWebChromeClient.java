@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -12,10 +13,15 @@ import android.provider.MediaStore;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+import com.example.a_webview.inter.onPhotoDialogListener;
+
 import java.io.File;
+
+import static com.example.a_webview.utils.FileUtils.getFilePath;
 
 /**
  * 相册以及拍照
@@ -25,6 +31,7 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
     public static final int TAKE_PIC_RESULT_CODE = 2098;
     public static ValueCallback<Uri> uriValueCallback;
     public static ValueCallback<Uri[]> valueCallbacks;
+    private onPhotoDialogListener mListener;
     public static Uri mImageUri = null;
     private Context mContext;
 
@@ -34,6 +41,10 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
         this.mContext = mContext;
     }
 
+    public void setListener(onPhotoDialogListener mListener) {
+        this.mListener = mListener;
+    }
+
     //5.0+
     @Override
     public boolean onShowFileChooser(WebView webView,
@@ -41,14 +52,14 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
                                      WebChromeClient.FileChooserParams fileChooserParams) {
         // TODO 自动生成的方法存根
         valueCallbacks = filePathCallback;
-        select();
+        mListener.showPhotoDialog(this);
         return true;
     }
 
     //4.0+
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
         uriValueCallback = uploadMsg;
-        select();
+        mListener.showPhotoDialog(this);
 
     }
 
@@ -57,7 +68,7 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
 
         uriValueCallback = uploadMsg;
-        select();
+        mListener.showPhotoDialog(this);
     }
 
 
@@ -65,38 +76,28 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
     @SuppressWarnings("static-access")
     public void openFileChooser(ValueCallback<Uri> uploadMsg) {
         uriValueCallback = uploadMsg;
-        select();
+        mListener.showPhotoDialog(this);
+    }
+
+
+    /**
+     * 打开相册
+     */
+    public void openAlbum() {
+        ((Activity) mContext).startActivityForResult(createDefaultOpenableIntent(),
+                IMG_CHOOSER_RESULT_CODE);
     }
 
     /**
-     * 跳转哪个选择
+     * 拍照
      */
-    public void select() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                cancle();
-            }
-        });
-        dialog.setTitle("相册还是拍照");
-        dialog.setNegativeButton("相册", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ((Activity) mContext).startActivityForResult(createDefaultOpenableIntent(),
-                        IMG_CHOOSER_RESULT_CODE);
-            }
-        });
-        dialog.setPositiveButton("拍照", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ((Activity) mContext).startActivityForResult(createCameraIntent(),
-                        TAKE_PIC_RESULT_CODE);
-
-            }
-        });
-        dialog.show();
-
+    public void takePhoto() {
+        if (!mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+            Toast.makeText(mContext, "设备无摄像头", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ((Activity) mContext).startActivityForResult(createCameraIntent(),
+                TAKE_PIC_RESULT_CODE);
     }
 
     /**
@@ -123,29 +124,13 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
         return cameraIntent;
     }
 
-    /**
-     * 图片存储路径
-     *
-     * @return
-     */
-    private String getFilePath() {
-        File externalDataDir = Environment.getExternalStorageDirectory();
-        File cameraDataDir = new File(externalDataDir.getAbsolutePath()
-                + File.separator + "Car");
-        cameraDataDir.mkdirs();//创建路径
-        String mCameraFilePath = cameraDataDir.getAbsolutePath()
-                + File.separator + "send_new_image.jpg";
-
-        return mCameraFilePath;
-    }
 
     /**
      * Uri获取 支持Android7.0
      */
     private Uri getFileUri() {
         Uri imageUri = null;
-        String path = getFilePath();
-        File file = new File(path);
+        File file = getFilePath();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//Android版本>=7.0
             try {
                 imageUri = FileProvider.getUriForFile((mContext),
@@ -190,4 +175,32 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
             uriValueCallback = null;
         }
     }
+    //    /**
+//     * 跳转哪个选择
+//     */
+//    public void select() {
+//        AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+//        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//            @Override
+//            public void onCancel(DialogInterface dialog) {
+//                cancle();
+//            }
+//        });
+//        dialog.setTitle("相册还是拍照");
+//        dialog.setNegativeButton("相册", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//
+//            }
+//        });
+//        dialog.setPositiveButton("拍照", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//
+//
+//            }
+//        });
+//        dialog.show();
+//
+//    }
 }
