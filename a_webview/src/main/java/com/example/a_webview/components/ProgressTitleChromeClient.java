@@ -1,6 +1,7 @@
 package com.example.a_webview.components;
 
 import android.content.Context;
+import android.webkit.GeolocationPermissions;
 import android.webkit.JsPromptResult;
 import android.webkit.WebView;
 
@@ -36,6 +37,15 @@ public class ProgressTitleChromeClient extends VideoWebChromeClient {
 
     }
 
+    /**
+     * 用于开启定位的功能
+     */
+    @Override
+    public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+        callback.invoke(origin, true, false);
+        super.onGeolocationPermissionsShowPrompt(origin, callback);
+    }
+
     @Override
     public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
         return super.onJsPrompt(view, url, message, defaultValue, result);
@@ -45,7 +55,7 @@ public class ProgressTitleChromeClient extends VideoWebChromeClient {
         this.onProgressCount = onProgressCount;
     }
 
-    public void setOnTitleReceive( onTitleReceiveListener onTitleReceive) {
+    public void setOnTitleReceive(onTitleReceiveListener onTitleReceive) {
         this.onTitleReceive = onTitleReceive;
     }
 }
