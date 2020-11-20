@@ -1,7 +1,10 @@
 package com.example.awebview;
 
+import android.Manifest;
+import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -16,6 +19,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.a_webview.components.PhotoWebChromeClient;
 import com.example.a_webview.inter.onPhotoDialogListener;
@@ -25,7 +30,10 @@ import com.example.a_webview.bean.InterBean;
 import com.example.a_webview.inter.ReShouldOverrideUrlLoadListener;
 import com.example.a_webview.inter.onTitleReceiveListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Observable;
+
 
 import static com.example.awebview.MainActivity.URLTAG;
 
@@ -38,7 +46,6 @@ public class WebViewImlActivity extends AppCompatActivity {
     String mUrl;
     ProgressViewTest mTest;
     Button mClick;
-    ArrayList<InterBean> mdata = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +60,7 @@ public class WebViewImlActivity extends AppCompatActivity {
         mTest.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 6));
         mTest.setDefaultColor(getResources().getColor(R.color.wsres_color_FE9949));
         //js调用android的方法
-        mdata.add(new InterBean(new WebViewJS(), "android"));
+        mAWebView.addJavascriptInterface(new WebViewJS(), "android");
         //android调用js方法
         mClick.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -69,7 +76,6 @@ public class WebViewImlActivity extends AppCompatActivity {
                 .setUrl(mUrl)
                 .setIsHaveProgress(true)//设置是否有进度条
                 .setProgressView(mTest)
-                .setJsData(mdata)
                 .setOnTitleReceive(new onTitleReceiveListener() {
                     @Override
                     public void onTitle(String title) {
@@ -94,10 +100,12 @@ public class WebViewImlActivity extends AppCompatActivity {
 
     }
 
+
     /**
      * 跳转哪个选择
      */
     public void select(final PhotoWebChromeClient mClient) {
+        //拥有权限，执行操作
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -115,12 +123,15 @@ public class WebViewImlActivity extends AppCompatActivity {
         dialog.setPositiveButton("拍照", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                mClient.takePhoto();
+                try {
+                    mClient.takePhoto();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             }
         });
         dialog.show();
-
     }
 
     @Override
@@ -130,6 +141,11 @@ public class WebViewImlActivity extends AppCompatActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);//退出H5界面
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        mAWebView.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

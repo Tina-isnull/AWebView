@@ -30,8 +30,7 @@ public class AWebViewWrapper {
     private AWebView mWebView;
     private WebChromeClient mWebChromeClient;
     private WebViewClient mWebViewClient;
-    //js交互的类
-    private ArrayList<InterBean> mJsData;
+
     private String mUrl;
     private Map<String, String> mHttpHeaders;
     //是否需要进度条
@@ -52,7 +51,6 @@ public class AWebViewWrapper {
         this.mWebView = mBuilder.mWebView;
         this.mWebChromeClient = mBuilder.mWebChromeClient;
         this.mWebViewClient = mBuilder.mWebViewClient;
-        this.mJsData = mBuilder.mJsData;
         this.mUrl = mBuilder.mUrl;
         this.mHttpHeaders = mBuilder.mHttpHeaders;
         this.isHaveProgress = mBuilder.isHaveProgress;
@@ -99,10 +97,7 @@ public class AWebViewWrapper {
                     .getWebViewClient();
             mWebView.setmBaseWebViewClient(mClient);
         }
-        //与js交互
-        for (InterBean data : mJsData) {
-            mWebView.addJavascriptInterface(data.object, data.tab);
-        }
+
         if (mHttpHeaders != null && mHttpHeaders.size() != 0) {
             mWebView.loadUrl(mUrl, mHttpHeaders);
         } else {
@@ -153,7 +148,6 @@ public class AWebViewWrapper {
         private AWebView mWebView;
         private WebChromeClient mWebChromeClient;
         private WebViewClient mWebViewClient;
-        private ArrayList<InterBean> mJsData = new ArrayList<>();
         private String mUrl;
         private Map<String, String> mHttpHeaders = new HashMap<String, String>();
         private boolean isHaveProgress;
@@ -193,10 +187,6 @@ public class AWebViewWrapper {
             return this;
         }
 
-        public Builder setJsData(ArrayList<InterBean> mJsData) {
-            this.mJsData = mJsData;
-            return this;
-        }
 
         public Builder setUrl(String mUrl) {
             this.mUrl = mUrl;

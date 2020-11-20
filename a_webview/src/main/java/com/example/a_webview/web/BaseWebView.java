@@ -82,6 +82,7 @@ public class BaseWebView extends WebView implements LifeCycleManager {
         webSetting.setJavaScriptEnabled(true);
         //支持通过JS打开新窗口
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
+        webSetting.setAllowContentAccess(true);
         webSetting.setAllowFileAccess(true);
         /*
          * 排版适应屏幕

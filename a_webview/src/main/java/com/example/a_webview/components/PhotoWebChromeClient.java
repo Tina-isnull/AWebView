@@ -1,27 +1,28 @@
 package com.example.a_webview.components;
 
+import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.example.a_webview.inter.onPhotoDialogListener;
 
 import java.io.File;
+import java.io.IOException;
 
-import static com.example.a_webview.utils.FileUtils.getFilePath;
+import static com.example.a_webview.utils.FileUtils.createImageFile;
 
 /**
  * 相册以及拍照
@@ -31,10 +32,10 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
     public static final int TAKE_PIC_RESULT_CODE = 2098;
     public static ValueCallback<Uri> uriValueCallback;
     public static ValueCallback<Uri[]> valueCallbacks;
-    private onPhotoDialogListener mListener;
+    public onPhotoDialogListener mListener;
     public static Uri mImageUri = null;
-    private Context mContext;
-
+    public File file = null;
+    public Context mContext;
 
     @SuppressWarnings("deprecation")
     public PhotoWebChromeClient(Context mContext) {
@@ -50,16 +51,15 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
     public boolean onShowFileChooser(WebView webView,
                                      ValueCallback<Uri[]> filePathCallback,
                                      WebChromeClient.FileChooserParams fileChooserParams) {
-        // TODO 自动生成的方法存根
         valueCallbacks = filePathCallback;
-        mListener.showPhotoDialog(this);
+        showDialog();
         return true;
     }
 
     //4.0+
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
         uriValueCallback = uploadMsg;
-        mListener.showPhotoDialog(this);
+        showDialog();
 
     }
 
@@ -68,7 +68,7 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
 
         uriValueCallback = uploadMsg;
-        mListener.showPhotoDialog(this);
+        showDialog();
     }
 
 
@@ -76,9 +76,21 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
     @SuppressWarnings("static-access")
     public void openFileChooser(ValueCallback<Uri> uploadMsg) {
         uriValueCallback = uploadMsg;
-        mListener.showPhotoDialog(this);
+        showDialog();
     }
 
+    /**
+     * 调起弹框
+     */
+    public void showDialog() {
+        int hasWriteStoragePermission = ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int hasCameraStoragePermission = ContextCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA);
+        if (hasWriteStoragePermission == PackageManager.PERMISSION_GRANTED && hasCameraStoragePermission == PackageManager.PERMISSION_GRANTED) {
+            mListener.showPhotoDialog(this);
+        } else {
+            ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 200);
+        }
+    }
 
     /**
      * 打开相册
@@ -91,13 +103,79 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
     /**
      * 拍照
      */
-    public void takePhoto() {
+    public void takePhoto() throws IOException {
         if (!mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             Toast.makeText(mContext, "设备无摄像头", Toast.LENGTH_SHORT).show();
             return;
         }
         ((Activity) mContext).startActivityForResult(createCameraIntent(),
                 TAKE_PIC_RESULT_CODE);
+    }
+
+
+    /**
+     * 相册intent
+     */
+    private Intent createDefaultOpenableIntent() {
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                "image/*");
+        return i;
+
+    }
+
+    /**
+     * 拍照intent
+     */
+    @SuppressWarnings("static-access")
+    private Intent createCameraIntent() throws IOException {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        this.mImageUri = getFileUri();
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+        cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        return cameraIntent;
+    }
+
+
+    /**
+     * Uri获取 支持Android7.0
+     */
+    private Uri getFileUri() throws IOException {
+        Uri imageUri = null;
+        file = createImageFile(mContext);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//Android版本>=7.0
+            try {
+                imageUri = FileProvider.getUriForFile(mContext, mContext.getPackageName().concat(".provider"), file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            imageUri = Uri.fromFile(file);
+        }
+        return imageUri;
+    }
+
+
+    /**
+     * 上传
+     *
+     * @param uris
+     */
+    public void update(Uri[] uris) {
+
+        if (valueCallbacks != null
+                && uris[0] != null) {
+            valueCallbacks.onReceiveValue(uris);
+            valueCallbacks = null;
+        }
+
+        if (uriValueCallback != null
+                && uris[0] != null) {
+            uriValueCallback.onReceiveValue(uris[0]);
+            uriValueCallback = null;
+        }
     }
 
     /**
@@ -113,71 +191,5 @@ public class PhotoWebChromeClient extends BaseWebChromeClient {
             uriValueCallback = null;
         }
     }
-
-    /**
-     * 跳转选择相册界面
-     */
-    private Intent createDefaultOpenableIntent() {
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                "image/*");
-        return i;
-
-    }
-
-    /**
-     * 调用系统相机拍照
-     */
-    @SuppressWarnings("static-access")
-    private Intent createCameraIntent() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        this.mImageUri = getFileUri();
-        cameraIntent.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-        return cameraIntent;
-    }
-
-
-    /**
-     * Uri获取 支持Android7.0
-     */
-    private Uri getFileUri() {
-        Uri imageUri = null;
-        File file = getFilePath();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//Android版本>=7.0
-            try {
-                imageUri = FileProvider.getUriForFile((mContext),
-                        "com.example.awebview.provider", file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        } else {
-            imageUri = Uri.fromFile(file);
-        }
-        return imageUri;
-    }
-
-    /**
-     * 上传
-     *
-     * @param uris
-     */
-    public static void update(Uri[] uris) {
-
-        if (valueCallbacks != null
-                && uris[0] != null) {
-            valueCallbacks.onReceiveValue(uris);
-            valueCallbacks = null;
-        }
-
-        if (uriValueCallback != null
-                && uris[0] != null) {
-            uriValueCallback.onReceiveValue(uris[0]);
-            uriValueCallback = null;
-        }
-    }
-
 
 }
