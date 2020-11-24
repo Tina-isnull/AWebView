@@ -41,7 +41,7 @@ public class AWebViewWrapper {
     private View mView;
     //进度条颜色
     private int mProgressColor;
-    //调起照片的进度条
+    //调起照片的弹框
     private onPhotoDialogListener onPhotoDialogListener;
 
 
@@ -57,6 +57,7 @@ public class AWebViewWrapper {
         this.onTitleReceive = mBuilder.onTitleReceive;
         this.mView = mBuilder.mView;
         this.onPhotoDialogListener = mBuilder.photoDialogListener;
+        this.mProgressColor = mBuilder.mProgressColor;
         init();
     }
 
