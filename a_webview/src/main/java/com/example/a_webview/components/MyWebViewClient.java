@@ -27,8 +27,9 @@ public class MyWebViewClient extends BaseWebViewClient {
     public boolean shouldOverrideUrlLoading(WebView wv, final String url) {
         if (url == null) return false;
         try {
-            if (mRedefineUrl != null) { //todo 这个功能感觉不是很好，还需要根据具体需要完善
+            if (mRedefineUrl != null) { //这个功能主要用于自定义一些操作，用于本app的,但是一但定义就要全部定义
                 mRedefineUrl.interceptProcess(wv, url);
+                return true;
             }
             if (urlCanLoad(url.toLowerCase())) {// 继续加载正常网页
                 return false;
@@ -45,8 +46,6 @@ public class MyWebViewClient extends BaseWebViewClient {
             } else {
                 String message;
                 if (mContext.getPackageManager().resolveActivity(intent, 0) == null) {
-//                    message = "是否跳转到浏览器中打开";
-//                    intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
                     new AlertDialog.Builder(mContext)
                             .setIcon(android.R.drawable.ic_dialog_info)
                             .setTitle("提示")
@@ -54,13 +53,13 @@ public class MyWebViewClient extends BaseWebViewClient {
                             .setPositiveButton("下载", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    // TODO 实现下载功能，这里直接调用第三方打开去下载
+                                    //实现下载功能，这里直接调用第三方打开去下载
                                     openBrowser(mContext, url);
                                 }
                             }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            dialog.dismiss();
                         }
                     }).show();
                     return true;
@@ -78,7 +77,7 @@ public class MyWebViewClient extends BaseWebViewClient {
                             }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            dialog.dismiss();
                         }
                     });
                 }
@@ -103,7 +102,6 @@ public class MyWebViewClient extends BaseWebViewClient {
      */
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-//        ToastUtils.showLong("onReceivedSslError:" + "https错误");
         handler.proceed();// 接受所有网站的证书
     }
 
@@ -157,12 +155,7 @@ public class MyWebViewClient extends BaseWebViewClient {
         final Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
-        // 注意此处的判断intent.resolveActivity()可以返回显示该Intent的Activity对应的组件名
-        // 官方解释 : Name of the component implementing an activity that can display the intent
         if (intent.resolveActivity(context.getPackageManager()) != null) {
-            final ComponentName componentName = intent.resolveActivity(context.getPackageManager());
-            // 打印Log   ComponentName到底是什么
-            LogUtils.d("componentName = " + componentName.getClassName());
             context.startActivity(Intent.createChooser(intent, "请选择浏览器"));
         } else {
             Toast.makeText(context.getApplicationContext(), "请下载浏览器", Toast.LENGTH_SHORT).show();
