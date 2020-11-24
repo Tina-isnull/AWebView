@@ -88,14 +88,14 @@ public class WebViewImlActivity extends AppCompatActivity {
                         select(mClient);
                     }
                 })
-                .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoadListener() {
-                    @Override
-                    public void interceptProcess(WebView wv, String url) {
-                        if (url.startsWith("wcar")) {
-                            startActivity(new Intent(WebViewImlActivity.this, SecondActivity.class));
-                        }
-                    }
-                })
+//                .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoadListener() {
+//                    @Override
+//                    public void interceptProcess(WebView wv, String url) {
+//                        if (url.startsWith("wcar")) {
+//                            startActivity(new Intent(WebViewImlActivity.this, SecondActivity.class));
+//                        }
+//                    }
+//                })
                 .getAWebViewWrapper();
 
     }
