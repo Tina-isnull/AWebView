@@ -18,14 +18,27 @@ implementation 'com.github.Tina-isnull:AWebView:1.0.2'
 ```
 使用
 ```
- @Override
+public class WebViewImlActivity extends AppCompatActivity {
+    TextView mTitle;
+    AWebView mAWebView;
+    String mUrl;
+    ProgressViewTest mTest;
+    Button mClick;
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_web_view_iml);
+        mAWebView = findViewById(R.id.aWebview);
+        mTitle = findViewById(R.id.web_title);
+        mClick = findViewById(R.id.js_click);
+        mUrl = getIntent().getStringExtra(URLTAG);
         //自定义导航条
         mTest = new ProgressViewTest(this);
         mTest.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 6));
         mTest.setDefaultColor(getResources().getColor(R.color.wsres_color_FE9949));
         //js调用android的方法
-        mdata.add(new InterBean(new WebViewJS(), "android"));
+        mAWebView.addJavascriptInterface(new WebViewJS(), "android");
         //android调用js方法
         mClick.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -39,25 +52,64 @@ implementation 'com.github.Tina-isnull:AWebView:1.0.2'
                 .setContext(this)
                 .setWebView(mAWebView)
                 .setUrl(mUrl)
-                .setUsedDefaultProgress(true)//是否用默认的进度条
-                .setProgressView(mTest)//自定义进度条
-                .setList(mdata)
-                .setOnTitleReceive(new onTitleReceive() {
+                .setIsHaveProgress(true)//设置是否有进度条
+                .setProgressView(mTest)
+                .setOnTitleReceive(new onTitleReceiveListener() {
                     @Override
                     public void onTitle(String title) {
                         mTitle.setText(title);
                     }
                 })
-                .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoading() {//自定义拦截事件
+                .setPhotoDialogListener(new onPhotoDialogListener() {
                     @Override
-                    public void InterceptProcess(WebView wv, String url) {
-                        if (url.startsWith("wcar")) {
-                            startActivity(new Intent(WebViewImlActivity.this, SecondActivity.class));
-                        }
+                    public void showPhotoDialog(PhotoWebChromeClient mClient) {
+                        select(mClient);
                     }
                 })
+//                .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoadListener() {
+//                    @Override
+//                    public void interceptProcess(WebView wv, String url) {
+//                        if (url.startsWith("wcar")) {
+//                            startActivity(new Intent(WebViewImlActivity.this, SecondActivity.class));
+//                        }
+//                    }
+//                })
                 .getAWebViewWrapper();
 
+    }
+
+
+    /**
+     * 跳转哪个选择
+     */
+    public void select(final PhotoWebChromeClient mClient) {
+        //拥有权限，执行操作
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                mClient.cancel();
+            }
+        });
+        dialog.setTitle("相册还是拍照");
+        dialog.setNegativeButton("相册", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mClient.openAlbum();
+            }
+        });
+        dialog.setPositiveButton("拍照", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    mClient.takePhoto();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        dialog.show();
     }
 
     @Override
@@ -68,7 +120,12 @@ implementation 'com.github.Tina-isnull:AWebView:1.0.2'
         }
         return super.onKeyDown(keyCode, event);//退出H5界面
     }
-    //照片回调
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        mAWebView.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
