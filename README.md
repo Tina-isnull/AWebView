@@ -14,7 +14,7 @@ repositories {
 ```
 2.build.gradle(app)中添加
 ```
-implementation 'com.github.Tina-isnull:AWebView:1.0.2'
+implementation 'com.github.Tina-isnull:AWebView:1.0.4'
 ```
 使用
 ```
