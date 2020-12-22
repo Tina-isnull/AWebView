@@ -66,10 +66,10 @@ public class WebViewImlActivity extends AppCompatActivity {
                         select(mClient);
                     }
                 })
-//                .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoadListener() {
-//                    @Override
-//                    public void interceptProcess(WebView wv, String url) {
-//                       if (url.startsWith("ccc://")) {
+                .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoadListener() {
+                    @Override
+                    public void interceptProcess(WebView wv, String url) {
+                       if (url.startsWith("ccc://")) {
                             //本APP内部链接跳转
                             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                             startActivity(intent);
@@ -77,8 +77,8 @@ public class WebViewImlActivity extends AppCompatActivity {
                         } else {
                             return false;
                         }
-//                    }
-//                })
+                    }
+                })
                 .getAWebViewWrapper();
 
     }
@@ -139,8 +139,9 @@ public class WebViewImlActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mAWebView.onDestroy();
+        super.onDestroy();
+       
     }
 ```
 
