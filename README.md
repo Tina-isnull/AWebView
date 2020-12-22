@@ -14,7 +14,7 @@ repositories {
 ```
 2.build.gradle(app)中添加
 ```
-implementation 'com.github.Tina-isnull:AWebView:1.0.4'
+implementation 'com.github.Tina-isnull:AWebView:1.0.5'
 ```
 使用
 ```
@@ -66,14 +66,19 @@ public class WebViewImlActivity extends AppCompatActivity {
                         select(mClient);
                     }
                 })
-//                .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoadListener() {
-//                    @Override
-//                    public void interceptProcess(WebView wv, String url) {
-//                        if (url.startsWith("wcar")) {
-//                            startActivity(new Intent(WebViewImlActivity.this, SecondActivity.class));
-//                        }
-//                    }
-//                })
+                .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoadListener() {
+                    @Override
+                    public void interceptProcess(WebView wv, String url) {
+                       if (url.startsWith("ccc://")) {
+                            //本APP内部链接跳转
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            startActivity(intent);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                })
                 .getAWebViewWrapper();
 
     }
@@ -134,8 +139,9 @@ public class WebViewImlActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mAWebView.onDestroy();
+        super.onDestroy();
+       
     }
 ```
 
