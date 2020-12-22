@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.webkit.SslErrorHandler;
@@ -11,14 +12,18 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
+import com.example.a_webview.R;
 import com.example.a_webview.inter.ReShouldOverrideUrlLoadListener;
+import com.example.a_webview.inter.onOpenThreeListener;
 import com.example.a_webview.utils.LogUtils;
 
 
 public class MyWebViewClient extends BaseWebViewClient {
     private Context mContext;
     private ReShouldOverrideUrlLoadListener mRedefineUrl;//自定义拦截操作
+    private onOpenThreeListener onOpenThreeListener;
 
     public MyWebViewClient() {
     }
@@ -69,24 +74,31 @@ public class MyWebViewClient extends BaseWebViewClient {
                     }).show();
                     return true;
                 } else {
-                    message = "即将离开「万顺叫车」，打开第三方应用";
-                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext).setIcon(android.R.drawable.ic_dialog_info)
-                            .setTitle("提示")
-                            .setMessage(message)
-                            .setCancelable(false)
-                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mContext.startActivity(intent);
-                                }
-                            }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    AlertDialog dialog = dialogBuilder.create();
-                    dialog.show();
+                    if (onOpenThreeListener != null) {
+                        onOpenThreeListener.showDialog(intent);//自定义弹框
+                    } else {
+                        message = "即将离开App，打开第三方应用";
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext).setIcon(android.R.drawable.ic_dialog_info)
+                                .setTitle("提示")
+                                .setMessage(message)
+                                .setCancelable(false)
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mContext.startActivity(intent);
+                                    }
+                                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        AlertDialog dialog = dialogBuilder.create();
+                        dialog.show();
+                        //弹框设置字体颜色
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#fe9949"));
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#333333"));
+                    }
                 }
             }
         } catch (Exception e) { //防止crash (如果手机上没有安装处理某个scheme开头的url的APP, 会导致crash)
@@ -124,12 +136,17 @@ public class MyWebViewClient extends BaseWebViewClient {
     public static class Builder {
         private Context mContext;
         private ReShouldOverrideUrlLoadListener mRedefineUrl;
+        private onOpenThreeListener onOpenThreeListener;
 
         public Builder setContext(Context mContext) {
             this.mContext = mContext;
             return this;
         }
 
+        public Builder setOpenThreeListener(onOpenThreeListener onOpenThreeListener) {
+            this.onOpenThreeListener = onOpenThreeListener;
+            return this;
+        }
 
         public Builder setReShouldOverrideUrlLoading(ReShouldOverrideUrlLoadListener mRedefineUrl) {
             this.mRedefineUrl = mRedefineUrl;

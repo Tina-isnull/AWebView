@@ -14,6 +14,7 @@ import com.example.a_webview.components.PhotoWebChromeClient;
 import com.example.a_webview.components.ProgressTitleChromeClient;
 import com.example.a_webview.inter.ProgressListener;
 import com.example.a_webview.inter.ReShouldOverrideUrlLoadListener;
+import com.example.a_webview.inter.onOpenThreeListener;
 import com.example.a_webview.inter.onPhotoDialogListener;
 import com.example.a_webview.inter.onProgressCountListener;
 import com.example.a_webview.inter.onTitleReceiveListener;
@@ -27,6 +28,7 @@ public class AWebViewWrapper {
     private Context mContext;
     //自定义拦截操作
     private ReShouldOverrideUrlLoadListener mRedefineUrl;
+    private onOpenThreeListener onOpenThreeListener;
     private AWebView mWebView;
     private WebChromeClient mWebChromeClient;
     private WebViewClient mWebViewClient;
@@ -58,6 +60,7 @@ public class AWebViewWrapper {
         this.mView = mBuilder.mView;
         this.onPhotoDialogListener = mBuilder.photoDialogListener;
         this.mProgressColor = mBuilder.mProgressColor;
+        this.onOpenThreeListener = mBuilder.onOpenThreeListener;
         init();
     }
 
@@ -95,6 +98,7 @@ public class AWebViewWrapper {
             MyWebViewClient mClient = MyWebViewClient.createBuilder()
                     .setContext(mContext)
                     .setReShouldOverrideUrlLoading(mRedefineUrl)
+                    .setOpenThreeListener(onOpenThreeListener)
                     .getWebViewClient();
             mWebView.setmBaseWebViewClient(mClient);
         }
@@ -156,6 +160,7 @@ public class AWebViewWrapper {
         private View mView;
         private int mProgressColor;
         private onPhotoDialogListener photoDialogListener;
+        private onOpenThreeListener onOpenThreeListener;
 
         public Builder setPhotoDialogListener(com.example.a_webview.inter.onPhotoDialogListener photoDialogListener) {
             this.photoDialogListener = photoDialogListener;
@@ -217,6 +222,12 @@ public class AWebViewWrapper {
         public Builder setProgressColor(int mProgressColor) {
             this.mProgressColor = mProgressColor;
             return this;
+        }
+
+        public Builder setOpenThreeListener(onOpenThreeListener onOpenThreeListener) {
+            this.onOpenThreeListener = onOpenThreeListener;
+            return this;
+
         }
 
         public AWebViewWrapper getAWebViewWrapper() {

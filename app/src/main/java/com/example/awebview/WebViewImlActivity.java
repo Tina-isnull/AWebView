@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.a_webview.components.PhotoWebChromeClient;
+import com.example.a_webview.inter.onOpenThreeListener;
 import com.example.a_webview.inter.onPhotoDialogListener;
 import com.example.a_webview.web.AWebView;
 import com.example.a_webview.web.AWebViewWrapper;
@@ -101,8 +103,32 @@ public class WebViewImlActivity extends AppCompatActivity {
                             return false;
                         }
                     }
-                })
-                .getAWebViewWrapper();
+                }).setOpenThreeListener(new onOpenThreeListener() {
+            @Override
+            public void showDialog(final Intent intent) {
+                String message = "即将离开「万顺叫车」，打开第三方应用";
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(WebViewImlActivity.this).setIcon(android.R.drawable.ic_dialog_info)
+                        .setTitle("提示")
+                        .setMessage(message)
+                        .setCancelable(false)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                startActivity(intent);
+                            }
+                        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                AlertDialog dialog = dialogBuilder.create();
+                dialog.show();
+                //弹框设置字体颜色
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#fe9949"));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#333333"));
+            }
+        }).getAWebViewWrapper();
 
     }
 
