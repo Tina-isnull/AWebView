@@ -23,12 +23,17 @@ public class MyWebViewClient extends BaseWebViewClient {
     public MyWebViewClient() {
     }
 
+    boolean isNext;
+
     @Override
     public boolean shouldOverrideUrlLoading(WebView wv, final String url) {
         if (url == null) return false;
+
         try {
             if (mRedefineUrl != null) { //这个功能主要用于自定义一些操作，用于本app的,但是一但定义就要全部定义
-                mRedefineUrl.interceptProcess(wv, url);
+                isNext = mRedefineUrl.interceptProcess(wv, url);
+            }
+            if (isNext) {
                 return true;
             }
             if (urlCanLoad(url.toLowerCase())) {// 继续加载正常网页
@@ -64,8 +69,8 @@ public class MyWebViewClient extends BaseWebViewClient {
                     }).show();
                     return true;
                 } else {
-                    message = "是否跳转到第三方应用";
-                    new AlertDialog.Builder(mContext).setIcon(android.R.drawable.ic_dialog_info)
+                    message = "即将离开「万顺叫车」，打开第三方应用";
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext).setIcon(android.R.drawable.ic_dialog_info)
                             .setTitle("提示")
                             .setMessage(message)
                             .setCancelable(false)
@@ -75,11 +80,13 @@ public class MyWebViewClient extends BaseWebViewClient {
                                     mContext.startActivity(intent);
                                 }
                             }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    AlertDialog dialog = dialogBuilder.create();
+                    dialog.show();
                 }
             }
         } catch (Exception e) { //防止crash (如果手机上没有安装处理某个scheme开头的url的APP, 会导致crash)

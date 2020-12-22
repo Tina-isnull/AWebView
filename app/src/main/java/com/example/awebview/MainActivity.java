@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent mIntent = new Intent(MainActivity.this, WebViewImlActivity.class);
 //                mIntent.putExtra(URLTAG, "file:///android_asset/index.html");
-                mIntent.putExtra(URLTAG, "https://www.baidu.com/?tn=80035161_1_dg");
+                mIntent.putExtra(URLTAG, "https://open.czb365.com/redirection/todo?platformType=92651662&platformCode=15110237585");
                 startActivity(mIntent);
             }
         });

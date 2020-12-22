@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -88,14 +89,26 @@ public class WebViewImlActivity extends AppCompatActivity {
                         select(mClient);
                     }
                 })
-//                .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoadListener() {
-//                    @Override
-//                    public void interceptProcess(WebView wv, String url) {
-//                        if (url.startsWith("wcar")) {
-//                            startActivity(new Intent(WebViewImlActivity.this, SecondActivity.class));
-//                        }
-//                    }
-//                })
+                .setReShouldOverrideUrlLoading(new ReShouldOverrideUrlLoadListener() {
+                    @Override
+                    public boolean interceptProcess(WebView wv, String url) {
+                        if (url.startsWith("http://ditu.amap.com") || url.startsWith("https://ditu.amap.com")) {//高德地图
+                            //拦截地图导航，不继续走下去(车生活中，车主帮需要拦截)
+                            return true;
+                        } else if (url.equals("https://djm-dev.wsecar.com/drivingManager/driving/order/getEDJH5PayOrderSuccess")) {
+                            //e代驾支付成功，点击返回，回到订单详情已支付页面。
+                            finish();
+                            return true;
+                        } else if (url.startsWith("wsjc://")) {
+                            //本APP内部链接跳转
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            startActivity(intent);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                })
                 .getAWebViewWrapper();
 
     }
